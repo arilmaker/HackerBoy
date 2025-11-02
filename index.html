@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL AKSES PROTOKOL TERLARANG</title>
+    <style>
+        /* Variabel untuk Rasio 16:9 */
+        :root {
+            --aspect-ratio-height: calc(100vw * 9 / 16);
+        }
+
+        body {
+            background-color: #000;
+            color: #0f0; 
+            font-family: 'Consolas', 'Monospace', monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* CONTAINER UTAMA (16:9) */
+        #container {
+            width: 90vw;
+            height: var(--aspect-ratio-height);
+            max-width: 100vh;
+            max-height: calc(100vh * 9 / 16);
+            
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 0 70px rgba(0, 255, 0, 0.7); 
+            
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2; 
+            box-sizing: border-box; 
+        }
+
+        /* 0. CANVAS MATRIX (HARUS FULL 100% DARI #container) */
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Pastikan ukurannya 100% dari parent-nya (#container) */
+            width: 100%; 
+            height: 100%;
+            z-index: 0; 
+            opacity: 0.6;
+        }
+        
+        /* 1. Background Image (Foto) */
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://placehold.co/1920x1080/000/0f0?text=FOTO+HACKER+HERE'); 
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2; 
+            z-index: 1; 
+            filter: grayscale(100%);
+        }
+
+        /* Efek Glitch untuk Judul */
+        .glitch-text {
+            font-size: 2.5em; 
+            color: #0f0; 
+            text-shadow: 0 0 5px #0f0;
+            margin-bottom: 30px;
+            animation: glitch 1.5s infinite alternate;
+            z-index: 3;
+            position: relative;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(1px, 1px) rotate(0deg); opacity: 1; }
+            25% { transform: translate(-1px, -2px) rotate(1deg); opacity: 0.85; }
+            50% { transform: translate(2px, -1px) rotate(-1deg); opacity: 1; }
+            75% { transform: translate(-2px, 2px) rotate(2deg); opacity: 0.9; }
+            100% { transform: translate(1px, 1px) rotate(-1deg); opacity: 1; }
+        }
+
+        /* Tampilan Kotak Menu */
+        .menu-box {
+            border: 2px solid #fff; 
+            color: #fff;
+            padding: 20px;
+            margin: 15px auto;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.5em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            background-color: rgba(0, 0, 0, 0.7); 
+            text-decoration: none; 
+            display: block; 
+            z-index: 3;
+            position: relative;
+        }
+
+        .menu-box:hover {
+            background-color: #0f0; 
+            color: #000; 
+            box-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+            border-color: #0f0; 
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="matrixCanvas"></canvas>
+        
+        <div class="background-image"></div>
+
+        <div id="main-menu" class="screen">
+            <h1 class="glitch-text">PILIH TARGET SIMULASI</h1>
+            
+            <a href="hackfreefire.html" class="menu-box">HACK AKUN FREE FIRE</a>
+            
+            <a href="hackjudol.html" class="menu-box">HACK SITUS JUDOL</a>
+            
+            <a href="hackwifi.html" class="menu-box">HACK WIFI</a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^&*()!{}[]:;<>,./|\\=+_-";
+        const font_size = 12;
+
+        function setCanvasSize() {
+            // Mengatur dimensi fisik canvas berdasarkan dimensi CSS 100%
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+        }
+
+        // Panggil saat awal
+        setCanvasSize();
+        
+        // Inisialisasi kolom setelah ukuran canvas diatur
+        let columns = canvas.width / font_size; 
+        let drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        // Fungsi menggambar Matrix
+        function drawMatrix() {
+            // Latar belakang transparan hitam (agar karakter sebelumnya memudar perlahan)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; 
+            ctx.font = font_size + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+                ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+                // Reset drop
+                if (drops[i] * font_size > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 33);
+        
+        // Responsif: Perbarui ukuran dan kolom saat jendela diubah ukurannya
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            columns = canvas.width / font_size;
+            drops = [];
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+        });
+
+    </script>
+</body>
+</html>

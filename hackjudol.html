@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL AKSES JUDOL PROTOKOL | LIVE EXFILTRATION</title>
+    <style>
+        /* CSS yang Menciptakan Tampilan "Hacker" (Merah Kritis) */
+        body {
+            background-color: #000;
+            color: #0f0; 
+            font-family: 'Consolas', 'Monospace', monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            /* Latar belakang dengan efek matrix */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><text x="0" y="8" fill="%23011" font-size="10">101010</text></svg>');
+            background-repeat: repeat;
+        }
+
+        #container {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .screen { padding: 20px; }
+        .hidden { display: none; }
+
+        .glitch-text {
+            font-size: 2.5em;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+            margin-bottom: 30px;
+            animation: glitch 1.5s infinite alternate;
+        }
+        
+        #loading-screen .glitch-text {
+            color: #ff0000; 
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1px, -2px) rotate(1deg); }
+            50% { transform: translate(2px, -1px) rotate(-1deg); }
+            75% { transform: translate(-2px, 2px) rotate(2deg); }
+            100% { transform: translate(1px, 1px) rotate(-1deg); }
+        }
+
+        input[type="text"], button {
+            width: 80%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #0f0;
+            background-color: #000;
+            color: #0f0;
+            font-size: 1.2em;
+            font-family: 'Consolas', monospace;
+            box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+        }
+
+        .back-button {
+            background-color: rgba(255, 0, 0, 0.5);
+            border-color: red;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: red;
+            color: #fff;
+        }
+
+        #console-output {
+            height: 200px;
+            background-color: #111;
+            border: 1px solid #0f0;
+            overflow-y: scroll;
+            padding: 10px;
+            text-align: left;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            /* Efek Kedip Kursor Terminal */
+            border-right: 2px solid #0f0; 
+            animation: cursor-blink 1s steps(2) infinite;
+        }
+        
+        @keyframes cursor-blink {
+            0% { border-right-color: #0f0; }
+            50% { border-right-color: transparent; }
+            100% { border-right-color: #0f0; }
+        }
+
+        #result-data {
+            border: 1px solid red; 
+            padding: 20px;
+            background-color: #111;
+            text-align: left;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            color: #ff8888; 
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #333;
+            border: 1px solid #ff0000; /* Border Merah untuk Kritis */
+            margin: 10px 0;
+            position: relative;
+        }
+
+        #progress {
+            height: 20px;
+            width: 0%;
+            background-color: #ff0000; 
+            box-shadow: 0 0 10px #ff0000;
+            transition: width 0.3s;
+            /* Animasi glitch pada bar progress */
+            animation: progress-glitch 0.5s infinite;
+        }
+
+        @keyframes progress-glitch {
+            0% { opacity: 0.9; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.9; }
+        }
+
+        .result-title {
+            color: red;
+            text-shadow: 0 0 5px red;
+        }
+        
+        .success-message {
+            font-size: 1.2em;
+            color: #00ff00; 
+            text-shadow: 0 0 8px #00ff00;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        #status-text {
+            color: #ff0000; /* Status teks dibuat merah agar terlihat seperti peringatan kritis */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="judol-input" class="screen">
+            <h1 class="glitch-text">MASUKKAN ALAMAT SITUS TARGET</h1>
+            <input type="text" id="judol-site" placeholder="URL Situs (Contoh: http://situsjudol.com)">
+            <button onclick="startJudolSiteSimulation()">INITIATE LIVE EXFILTRATION</button>
+            <a href="index.html" class="back-button"><button>ABORT OPERATION</button></a>
+        </div>
+
+        <div id="loading-screen" class="screen hidden">
+            <h1 class="glitch-text">CRITICAL JUDOL INTRUSION PROTOCOL</h1>
+            <div id="console-output"></div>
+            <div class="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <p id="status-text">Mencari celah pada server game...</p>
+        </div>
+
+        <div id="result-screen" class="screen hidden">
+            <h1 class="glitch-text result-title">DATABASE OVERWRITTEN: ACCESS GRANTED</h1>
+            <div id="result-data"></div>
+            <a href="index.html" class="back-button"><button>EXIT TERMINAL</button></a>
+        </div>
+    </div>
+
+    <script>
+        // --- FUNGSI TAMPILAN DAN LOG ---
+
+        // Fungsi untuk mengetik teks satu per satu (efek real-time)
+        function typeConsole(element, text, speed, callback) {
+            let i = 0;
+            // Membuat efek typing di baris baru
+            element.innerHTML += '<span class="typing-line">';
+            const span = element.lastElementChild;
+
+            const typing = setInterval(() => {
+                if (i < text.length) {
+                    span.textContent += text.charAt(i);
+                    element.scrollTop = element.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(typing);
+                    span.innerHTML += '</span><br>';
+                    if (callback) callback();
+                }
+            }, speed);
+        }
+
+        // Fungsi untuk menghasilkan OUTPUT AKHIR (Pesan Kemenangan)
+        function generateJudolSiteStructuredData(judolSite) {
+            
+            // Pesan dramatis yang diminta
+            let output = `<div class="success-message">`;
+            output += `TARGET SITE [${judolSite}] TELAH DI HACK!!\n\n`;
+            output += `INJECTION SUKSES. ANDA SEKARANG MEMILIKI AKSES PENUH\n`;
+            output += `PADA ALGORITMA RNG SITUS TERSEBUT.\n\n`;
+            output += `<span style="font-size: 1.8em; color: #ff0000; text-shadow: 0 0 10px #ff0000;">KEMENANGAN ANDA 100% GUARANTEED</span>`;
+            output += `</div>`;
+            
+            return output;
+        }
+
+
+        // Fungsi utama simulasi Situs Judol
+        function startJudolSiteSimulation() {
+            const consoleOutput = document.getElementById('console-output');
+            const progressBar = document.getElementById('progress');
+            const statusText = document.getElementById('status-text');
+            const judolSite = document.getElementById('judol-site').value;
+
+            if (!judolSite) {
+                alert("[-] CRITICAL ERROR: URL Target Kosong.");
+                return;
+            }
+
+            document.getElementById('judol-input').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            consoleOutput.innerHTML = '';
+            progressBar.style.width = '0%';
+            statusText.textContent = 'Mencari celah pada server game...';
+            
+            // Log langkah-langkah yang lebih detail dan kritis
+            const steps = [
+                `[ALERT] PINGING TARGET: ${judolSite}... (STATUS: 45ms)`,
+                "[ATTACK] Menganalisis kerentanan SQL-Injection level 3...",
+                "[ATTACK] Bypassing Cloudflare/WAF. Initial exploit successful.",
+                "[SYSTEM] Accessing root directory. Listing directories...",
+                "[SYSTEM] /var/www/html/engine/config/db_credentials.php (FOUND)",
+                "[SYSTEM] Dumping Database Credentials... (STATUS: OK)",
+                "[INJECTION] Connecting to MariaDB/MySQL (user: root)...",
+                "[INJECTION] Target: rng_algorithm_v3.0. Running payload: 'WIN_100_v_FINAL'.",
+                "[CRITICAL] Writing back modified RNG data to server...",
+                "[CRITICAL] INJECTION SUCCESS. ALGORITHM OVERWRITTEN.",
+                "[FINAL] OPERATION COMPLETE. Closing session."
+            ];
+
+            let currentStep = 0;
+            const totalSteps = steps.length;
+            // Interval dibuat sedikit acak (700-1100ms) agar terasa kurang scripted
+            const logInterval = 700 + Math.random() * 400; 
+
+            function runNextStep() {
+                if (currentStep < totalSteps) {
+                    const logLine = `[${new Date().toLocaleTimeString()}] `;
+                    
+                    // Ketik logLine + langkah ke konsol
+                    typeConsole(consoleOutput, logLine + steps[currentStep], 20 + Math.random() * 10, () => {
+                        statusText.textContent = steps[currentStep];
+                        const progressWidth = ((currentStep + 1) / totalSteps) * 100;
+                        progressBar.style.width = progressWidth + '%';
+                        
+                        currentStep++;
+                        setTimeout(runNextStep, logInterval);
+                    });
+                } else {
+                    // Selesai
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').classList.add('hidden');
+                        document.getElementById('result-screen').classList.remove('hidden');
+                        
+                        const structuredData = generateJudolSiteStructuredData(judolSite);
+                        document.getElementById('result-data').innerHTML = structuredData;
+                    }, 500); 
+                }
+            }
+
+            runNextStep();
+        }
+    </script>
+</body>
+</html>

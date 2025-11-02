@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL DUMP DATA - FF</title>
+    <style>
+        /* CSS yang Menciptakan Tampilan "Hacker" */
+        body {
+            background-color: #000;
+            color: #0f0; 
+            font-family: 'Consolas', 'Monospace', monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><text x="0" y="8" fill="%23011" font-size="10">101010</text></svg>');
+            background-repeat: repeat;
+        }
+
+        #container {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .screen { padding: 20px; }
+        .hidden { display: none; }
+
+        .glitch-text {
+            font-size: 2.5em;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+            margin-bottom: 30px;
+            animation: glitch 1.5s infinite alternate;
+        }
+        /* Penyesuaian warna glitch untuk tampilan loading yang lebih kritis */
+        #loading-screen .glitch-text {
+            color: #ff0000; /* Merah di layar loading */
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1px, -2px) rotate(1deg); }
+            50% { transform: translate(2px, -1px) rotate(-1deg); }
+            75% { transform: translate(-2px, 2px) rotate(2deg); }
+            100% { transform: translate(1px, 1px) rotate(-1deg); }
+        }
+
+        input[type="text"], button {
+            width: 80%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #0f0;
+            background-color: #000;
+            color: #0f0;
+            font-size: 1.2em;
+            font-family: 'Consolas', monospace;
+            box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+        }
+
+        .back-button {
+            background-color: rgba(255, 0, 0, 0.5);
+            border-color: red;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: red;
+            color: #fff;
+        }
+
+        #console-output {
+            height: 200px;
+            background-color: #111;
+            border: 1px solid #0f0;
+            overflow-y: scroll;
+            padding: 10px;
+            text-align: left;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+        }
+        
+        /* Gaya khusus untuk data output sensitif */
+        #result-data {
+            border: 1px solid red; /* Border merah menandakan data sensitif */
+            padding: 20px;
+            background-color: #111;
+            text-align: left;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            color: #ff8888; /* Warna teks agak kemerahan */
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #333;
+            border: 1px solid #0f0;
+            margin: 10px 0;
+        }
+
+        #progress {
+            height: 20px;
+            width: 0%;
+            background-color: #ff0000; /* Bar progress merah */
+            transition: width 0.3s;
+        }
+
+        .result-title {
+            color: red;
+            text-shadow: 0 0 5px red;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="ff-input" class="screen">
+            <h1 class="glitch-text">MASUKKAN ID FREE FIRE TARGET</h1>
+            <input type="text" id="ff-id" placeholder="ID Pemain (Contoh: 123456789)">
+            <button onclick="startSimulation('freefire')">INITIATE LIVE DUMP</button>
+            <a href="index.html" class="back-button"><button>EXIT TERMINAL</button></a>
+        </div>
+
+        <div id="loading-screen" class="screen hidden">
+            <h1 class="glitch-text">INITIATING LIVE DUMP PROTOCOL</h1>
+            <div id="console-output"></div>
+            <div class="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <p id="status-text">Mempersiapkan koneksi aman...</p>
+        </div>
+
+        <div id="result-screen" class="screen hidden">
+            <h1 class="glitch-text result-title">DUMP SUCCESS: DATA EXTRACTED</h1>
+            <div id="result-data"></div>
+            <a href="index.html" class="back-button"><button>EXIT TERMINAL</button></a>
+        </div>
+    </div>
+
+    <script>
+        // Data untuk simulasi email/password realistis
+        const commonPrefixes = ["ReNo@EpenhO", "Feriz2001", "182Hafiz9", "KepoDsdn88@", "Itong-RefanFi7112", "ApaYahh11201", "MekiiiAnjanni02", "RependiAnsyah122", "KucingSuparnma", "AndriAnfiPedri1100", "FFSULTAN122", "Akhirrran", "fikrann17", "apriliann9188"];
+        const commonSuffixes = ["6177", "32299", "204", "182221", "262551", "280", "99", "21", "0912", "2811"];
+        const validNames = ["adi", "budi", "cinta", "doni", "eva", "fajar", "gita", "hendra", "irma", "joko", "kiki", "lisa", "maya", "nando", "ola", "putra", "rudi", "sari", "toni", "george", "steve", "maria", "alex", "chris"];
+        const gmailDomains = ['gmail.com'];
+
+        function generateRandomString(length) {
+            let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function generateCommonPassword() {
+            const prefix = commonPrefixes[Math.floor(Math.random() * commonPrefixes.length)];
+            const suffix = commonSuffixes[Math.floor(Math.random() * commonSuffixes.length)];
+            const year = 1980 + Math.floor(Math.random() * 30);
+
+            const patterns = [
+                `${prefix}${suffix}`, 
+                `${prefix}${year}`, 
+                `${prefix.charAt(0).toUpperCase()}${prefix.slice(1)}123`, 
+                `${prefix.slice(0, 4)}@${year}` 
+            ];
+            return patterns[Math.floor(Math.random() * patterns.length)];
+        }
+
+        // Fungsi baru untuk mengetik teks satu per satu (efek real-time)
+        function typeConsole(element, text, speed, callback) {
+            let i = 0;
+            const typing = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    element.scrollTop = element.scrollHeight; // Scroll ke bawah
+                    i++;
+                } else {
+                    clearInterval(typing);
+                    if (callback) callback();
+                }
+            }, speed);
+        }
+
+        // Fungsi untuk menghasilkan OUTPUT AKHIR
+        function generateStructuredData(ffId) {
+            const randomNamePart = validNames[Math.floor(Math.random() * validNames.length)];
+            const randomNumberPart = Math.floor(10 + Math.random() * 900); 
+            const finalEmailUser = `${randomNamePart}${randomNumberPart}`;
+            const randomDomain = gmailDomains[Math.floor(Math.random() * gmailDomains.length)];
+
+            const finalGmail = `${finalEmailUser}@${randomDomain}`;
+            const finalPassword = generateCommonPassword();
+
+            // Format output akhir sesuai permintaan
+            let output = `// CRITICAL DUMP SUCCESS [LIVE]\n`;
+            output += `// ===================================\n\n`;
+            output += `[!] berikut data korban\n`;
+            output += `<span style="color: #ff0000;">[X] Gmail: ${finalGmail}</span>\n`; // Warna merah untuk data sensitif
+            output += `<span style="color: #ff0000;">[X] Password: ${finalPassword}</span>\n`; // Warna merah untuk data sensitif
+            output += `[>] Id Target: ${ffId}\n\n`;
+            output += `// OPERATION COMPLETE (STATUS: INTRUSION)`;
+            return output;
+        }
+
+
+        // Fungsi utama simulasi
+        function startSimulation(type) {
+            const consoleOutput = document.getElementById('console-output');
+            const progressBar = document.getElementById('progress');
+            const statusText = document.getElementById('status-text');
+            const ffId = document.getElementById('ff-id').value;
+
+            if (!ffId) {
+                alert("[-] ERROR: ID target tidak valid.");
+                return;
+            }
+
+            document.getElementById('ff-input').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            consoleOutput.innerHTML = '';
+            progressBar.style.width = '0%';
+            statusText.textContent = 'Mempersiapkan koneksi aman...';
+
+            const steps = [
+                `[1] Menganalisis ID: ${ffId}.`,
+                "[2] Mencoba bypass Garena Authentication Server (GAS)...",
+                "[3] Gas Bypass Success. Status: Connected.",
+                "[4] Running Brute-Force Protocol V2.1.",
+                "[5] Searching for common credential patterns...",
+                "[6] Key Found. Preparing Data Dump...",
+                "[7] Executing final dump command... DUMPING DATA.",
+                "[8] OPERATION SUCCESS. Data Extracted."
+            ];
+
+            let currentStep = 0;
+            const totalSteps = steps.length;
+            const logInterval = 800 + Math.random() * 300; // Interval antar log
+
+            function runNextStep() {
+                if (currentStep < totalSteps) {
+                    const logLine = `[${new Date().toLocaleTimeString()}] `;
+                    
+                    // Ketik logLine ke konsol
+                    typeConsole(consoleOutput, logLine, 10, () => {
+                        // Setelah logLine selesai, ketik pesan langkah
+                        typeConsole(consoleOutput, steps[currentStep] + '\n', 20, () => {
+                            statusText.textContent = steps[currentStep];
+                            const progressWidth = ((currentStep + 1) / totalSteps) * 100;
+                            progressBar.style.width = progressWidth + '%';
+                            
+                            currentStep++;
+                            setTimeout(runNextStep, logInterval); // Tunggu interval sebelum langkah berikutnya
+                        });
+                    });
+                } else {
+                    // Selesai
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').classList.add('hidden');
+                        document.getElementById('result-screen').classList.remove('hidden');
+                        
+                        const structuredData = generateStructuredData(ffId);
+                        document.getElementById('result-data').innerHTML = structuredData;
+                    }, 500); 
+                }
+            }
+
+            runNextStep(); // Mulai simulasi
+        }
+    </script>
+</body>
+</html>
